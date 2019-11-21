@@ -1,0 +1,12 @@
+- name: 编译nginx
+  shell: "cd {{ SOURCE_DIR}}/nginx-{{ NGINX_VER }} && ./configure --prefix={{ NGINX_DIR }} --user={{ NGINX_USER }} --group={{ NGINX_USER }} --with-http_stub_status_module --with-http_ssl_module --with-http_gzip_static_module"
+  
+- name: 安装nginx
+  shell: "cd {{ SOURCE_DIR}}/nginx-{{ NGINX_VER }} && make && make install"  
+  
+- name: 启动nginx并设置自启动
+  shell: "systemctl daemon-reload && systemctl enable nginx && systemctl start nginx"
+  
+
+
+  

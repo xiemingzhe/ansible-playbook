@@ -1,0 +1,53 @@
+- name: 创建PHP用户组
+  group: name={{ PHP_USER }} state=present
+ 
+- name: 创建PHP用户组
+  user: name={{ PHP_USER }} group={{ PHP_USER }} state=present create_home=False shell=/sbin/nologin
+  
+- name: 拷贝并解压依赖包
+  unarchive: src={{ item }} dest={{ SOURCE_DIR }}
+  with_items:
+    - yasm-1.2.0.tar.gz
+    - libmcrypt-2.5.8.tar.gz
+    - libvpx-v1.3.0.tar-4.bz2
+    - tiff-4.0.3.tar.gz
+    - libpng-1.6.37.tar.gz
+    - freetype-2.5.3.tar.gz
+    - jpegsrc.v9a.tar.gz
+    - libgd-2.1.0.tar.gz
+    - t1lib-5.1.2.tar.gz  
+
+- name: 编译安装依赖包1-yasm
+  shell: "cd {{ SOURCE_DIR }}/yasm-1.2.0 && ./configure && make && make install"
+  
+- name: 编译安装依赖包2-libmcrypt
+  shell: "cd {{ SOURCE_DIR }}/libmcrypt-2.5.8 && ./configure && make && make install"
+
+- name: 编译安装依赖包3-libvpx
+  shell: "cd {{ SOURCE_DIR }}/libvpx-v1.3.0 && ./configure --prefix=/usr/local/libvpx --enable-shared --enable-vp9 && make && make install"
+
+- name: 编译安装依赖包4-tiff
+  shell: "cd {{ SOURCE_DIR }}/tiff-4.0.3 && ./configure --prefix=/usr/local/tiff --enable-shared && make && make install"
+
+- name: 编译安装依赖包5-libpng
+  shell: "cd {{ SOURCE_DIR }}/libpng-1.6.37 && ./configure --prefix=/usr/local/libpng --enable-shared && make && make install"
+
+- name: 编译安装依赖包6-freetype
+  shell: "cd {{ SOURCE_DIR }}/freetype-2.5.3 && ./configure --prefix=/usr/local/freetype --enable-shared && make && make install"
+
+- name: 编译安装依赖包7-jpegsrc
+  shell: "cd {{ SOURCE_DIR }}/jpeg-9a  && ./configure --prefix=/usr/local/jpeg --enable-shared && make && make install"
+
+- name: 编译安装依赖包8-libgd
+  shell: "cd {{ SOURCE_DIR }}/libgd-2.1.0 && ./configure --prefix=/usr/local/libgd --enable-shared --with-jpeg=/usr/local/jpeg --with-png=/usr/local/libpng --with-freetype=/usr/local/freetype --with-fontconfig=/usr/local/freetype --with-xpm=/usr/ --with-tiff=/usr/local/tiff --with-vpx=/usr/local/libvpx && make && make install"
+
+- name: 编译安装依赖包9-t1lib
+  shell: "cd {{ SOURCE_DIR }}/t1lib-5.1.2 && ./configure --prefix=/usr/local/t1lib --enable-shared && make without_doc && make install"
+- name: 链接t1lib函数文件
+  file: src=/usr/lib64/libltdl.so dest=/usr/lib/libltdl.so state=link
+- name: 复制函数库文件
+  shell: "cp -rpf /usr/lib64/libXpm.so* /usr/lib/"
+
+- name: 拷贝并解压PHP包
+  unarchive: src=php-7.2.6.tar.gz dest={{ SOURCE_DIR }} owner={{ PHP_USER }} group={{ PHP_USER }}
+      

@@ -1,0 +1,22 @@
+- name: 创建nginx用户
+  user: name={{ NGINX_USER}} state=present createhome=no shell=/sbin/nologin
+
+- name: 拷贝并解压Nginx包
+  unarchive: src=nginx-{{ NGINX_VER }}.tar.gz dest={{ SOURCE_DIR }} owner=root group=root
+
+ - name: 拷贝Nginx.conf文件
+   template: src=nginx.conf dest={{ NGINX_DIR }}/conf/nginx.conf owner={{ NGINX_USER }} group={{ NGINX_USER }}
+
+ - name: 拷贝nginx服务文件
+   template: src=nginx.service dest=/etc/rc.d/init.d/nginx owner=root group=root mode=0755
+   notify: 
+    - daemon_reload
+
+# 安装依赖包，基本在prepare剧本中都已经相互安装了  
+- name: 安装Nginx依赖包
+  yum:
+    name:
+     - pcre
+     - openssl
+     - zlib
+    state: latest      

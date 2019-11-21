@@ -1,0 +1,5 @@
+NGINX_VER: 1.15.0
+NGINX_USER: www
+NGINX_DIR: /usr/local/nginx
+NGINX_PORT: 80
+SOURCE_DIR: /tmp/lnmp

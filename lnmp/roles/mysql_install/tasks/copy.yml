@@ -1,0 +1,32 @@
+- name: 创建mysql用户
+  user: name={{ MYSQL_USER }} state=present createhome=no shell=/sbin/nologin
+
+- name: 拷贝并解压mysql包
+  unarchive: src=mysql-{{ MYSQL_VER }}-linux-glibc2.12-x86_64.tar.gz dest=/usr/local owner={{ MYSQL_USER }} group={{ MYSQL_USER }}
+
+# 此时会自动创建/usr/local/mysql目录,也就是变量BASE_DIR
+- name: 重命名mysql目录
+  shell: "mv /usr/local/mysql-{{ MYSQL_VER }}-linux-glibc2.12-x86_64 {{ BASE_DIR }} && chown {{ MYSQL_USER }}:{{ MYSQL_USER }} {{ BASE_DIR }}"
+
+- name: 创建mysql数据目录
+  file: name={{ DATA_DIR }} state=directory mode=0755 recurse=yes owner={{ MYSQL_USER }} group={{ MYSQL_USER }}
+  
+- name: 拷贝mysql配置文件
+  template: src=my.cnf dest=/etc/my.cnf owner={{ MYSQL_USER }} group={{ MYSQL_USER }} 
+  
+- name: 拷贝mysql服务文件
+  template: src=mysqld.service dest=/usr/lib/systemd/system/mysqld.service owner=root group=root
+  
+- name: 拷贝更改密码脚本
+  template: src=change_passwd.sh dest={{ SOURCE_DIR }} owner=root group=root
+  
+- name: 创建日志目录
+  file: name={{ item }} state=directory mode=0755 recurse=yes owner={{ MYSQL_USER }} group={{ MYSQL_USER }}
+  with_items:
+    - "/var/log/mysql"
+    - "/var/run/mysqld"
+    - "{{ BASE_DIR }}/tmp"
+    - "{{ BASE_DIR }}/log"
+
+- name: 创建错误日志文件
+  file: name={{ BASE_DIR }}/log/error.log state=touch owner={{ MYSQL_USER }} group={{ MYSQL_USER }} 

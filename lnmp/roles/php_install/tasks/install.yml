@@ -1,0 +1,34 @@
+- name: 编译PHP
+  shell: "cd {{ SOURCE_DIR }}/php-{{ PHP_VER }} && 
+  ./configure --prefix={{ PHP_DIR }} --with-configfile-path={{ PHP_DIR }}/etc --with-mysql={{ MYSQL_DIR }}  
+  --with-mysqli={{ MYSQL_DIR }}/bin/mysql_config --with-mysql-sock={{ MYSQL_DIR }}/tmp/mysql.sock 
+  --with-freetype-dir=/usr/local/freetype --with-xpm-dir=/usr/ --with-vpx-dir=/usr/local/libvpx/ 
+  --with-zlib-dir=/usr/local/zlib --with-t1lib=/usr/local/t1lib --with-iconv --enable-libxml --enable-xml 
+  --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-opcache --enable-mbregex 
+  --enable-fpm --enable-mbstring --enable-ftp --enable-gd-native-ttf --with-openssl --enable-pcntl --enable-sockets 
+  --with-xmlrpc --enable-zip --enable-soap --without-pear --with-gettext --enable-session --with-mcrypt 
+  --with-curl --enable-ctype --with-fpm-user={{ PHP_USER }} --with-fpm-group={{ PHP_USER }}"  
+
+- name: 安装PHP
+  shell: "cd {{ SOURCE_DIR }}/php-{{ PHP_VER }} && make && make install" 
+  
+- name: 删除PHP默认配置文件
+  file: name=/etc/php.ini state=absent
+
+- name: 拷贝php.ini配置文件
+  shell: "cd {{ SOURCE_DIR }}/php-{{ PHP_VER }} && cp php.ini-production {{ PHP_DIR }}/etc/php.ini"
+  
+- name: 链接php.ini到etc下
+  file: src={{ PHP_DIR }}/etc/php.ini dest=/etc/php.ini state=link  
+
+- name: 拷贝主配置文件
+  template: src=php-fpm.conf dest={{ PHP_DIR }}/etc/php-fpm.conf owner={{ PHP_USER }} group={{ PHP_USER }}
+  
+- name: 链接主配置文件到etc下
+  file: src={{ PHP_DIR }}/etc/php-fpm.conf dest=/etc/php-fpm.conf state=link
+  
+- name: 拷贝启动配置文件
+  shell: "cd {{ SOURCE_DIR }}/php-{{ PHP_VER }} && cp sapi/fpm/init.d.php-fpm /etc/rc.d/init.d/php-fpm && chmod 755 /etc/rc.d/init.d/php-fpm"
+  
+- name: 启动php并设置开机启动
+  shell: "chkconfig php-fpm on && /etc/init.d/php-fpm restart"  

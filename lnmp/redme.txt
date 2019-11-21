@@ -1,0 +1,79 @@
+﻿roles:
+  - prepare_env   :  系统和编译环境准备，包括本地yum设置
+  - nginx_install ： nginx安装剧本
+  - mysql_install ： mysql安装剧本
+  - php_install   ： php安装剧本
+
+Software download:
+https://pan.baidu.com/s/1RFdNfV6Gwc_C1A1bQvuliw 
+提取码：4i4p
+
+目录结构：
+[root@control roles]# tree lnmp
+lnmp
+├── lnmp.yml
+└── roles
+    ├── mysql_install
+    │   ├── files
+    │   │   └── mysql-5.7.25-linux-glibc2.12-x86_64.tar.gz
+    │   ├── handlers
+    │   ├── meta
+    │   ├── tasks
+    │   │   ├── copy.yml
+    │   │   ├── install.yml
+    │   │   └── main.yml
+    │   ├── templates
+    │   │   ├── change_passwd.sh
+    │   │   ├── my.cnf
+    │   │   └── mysqld.service
+    │   └── vars
+    │       └── main.yml
+    ├── nginx_install
+    │   ├── files
+    │   │   └── nginx-1.15.0.tar.gz
+    │   ├── handlers
+    │   │   └── main.yml
+    │   ├── meta
+    │   ├── tasks
+    │   │   ├── copy.yml
+    │   │   ├── install.yml
+    │   │   └── main.yml
+    │   ├── templates
+    │   │   ├── nginx.conf
+    │   │   └── nginx.service
+    │   └── vars
+    │       └── main.yml
+    ├── php_install
+    │   ├── files
+    │   │   ├── freetype-2.5.3.tar.gz
+    │   │   ├── jpegsrc.v9a.tar.gz
+    │   │   ├── libgd-2.1.0.tar.gz
+    │   │   ├── libmcrypt-2.5.8.tar.gz
+    │   │   ├── libpng-1.6.37.tar.gz
+    │   │   ├── libvpx-v1.3.0.tar-4.bz2
+    │   │   ├── php-7.2.6.tar.gz
+    │   │   ├── t1lib-5.1.2.tar.gz
+    │   │   ├── tiff-4.0.3.tar.gz
+    │   │   └── yasm-1.2.0.tar.gz
+    │   ├── handlers
+    │   ├── meta
+    │   ├── tasks
+    │   │   ├── copy.yml
+    │   │   ├── install.yml
+    │   │   └── main.yml
+    │   ├── templates
+    │   │   └── php-fpm.conf
+    │   └── vars
+    │       └── main.yml
+    └── prepare_env
+        ├── files
+        │   └── yum.sh
+        ├── handlers
+        ├── meta
+        ├── tasks
+        │   └── main.yml
+        ├── templates
+        └── vars
+            └── main.yml
+
+29 directories, 35 files

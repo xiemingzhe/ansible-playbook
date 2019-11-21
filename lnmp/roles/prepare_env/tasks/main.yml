@@ -1,0 +1,89 @@
+- name: 关闭防火墙
+  service: name=firewalld state=stopped enabled=no
+  
+- name: 临时关闭SELinux
+  shell: "setenforce 0"
+  failed_when: false
+  
+- name: 永久关闭SELinux
+  lineinfile: 
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX=disabled"
+
+- name: 创建客户端目录
+  file: path={{ SOURCE_DIR }} state=directory
+
+- name: 拷贝配置YUM脚本
+  copy: src=yum.sh dest={{ SOURCE_DIR}}/yum.sh owner=root group=root mode=0755
+  
+- name: 配置客户端本地YUM
+  shell: "sh {{ SOURCE_DIR }}/yum.sh"
+  register: ls_result
+- debug: var=ls_result 
+
+- name: 编译环境准备
+  yum:
+    name:
+      - apr*
+      - autoconf
+      - automake
+      - bison
+      - bzip2
+      - bzip2*
+      - compat*
+      - cpp
+      - curl
+      - curl-devel
+      - fontconfig
+      - fontconfig-devel
+      - freetype
+      - freetype*
+      - freetype-devel
+      - gcc
+      - gcc-c++
+      - gd
+      - gettext
+      - gettext-devel
+      - glibc
+      - kernel
+      - kernel-devel
+      - kernel-headers
+      - keyutils
+      - keyutils-libs-devel
+      - krb5-devel
+      - libcom_err-devel
+      - libpng
+      - libpng-devel
+      - libjpeg*
+      - libsepol-devel
+      - libselinux-devel
+      - libstdc++-devel
+      - libtool*
+      - libgomp
+      - libxml2
+      - libxml2-devel
+      - libXpm*
+      - libtiff
+      - libtiff*
+      - make
+      - mpfr
+      - ncurses*
+      - ntp
+      - openssl
+      - openssl-devel
+      - patch
+      - pcre-devel
+      - perl
+      - php-common
+      - php-gd
+      - policycoreutils
+      - telnet 
+      - t1lib
+      - t1lib*
+      - nasm
+      - nasm*
+      - wget
+      - zlib-devel
+    state: latest
+

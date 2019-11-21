@@ -1,0 +1,8 @@
+#定义mysql安装中的变量
+MYSQL_VER: 5.7.25
+MYSQL_USER: mysql
+MYSQL_PORT: 3306
+MYSQL_PASSWD: password
+SOURCE_DIR: /tmp/lnmp
+BASE_DIR: /usr/local/mysql
+DATA_DIR: /usr/local/mysql/data

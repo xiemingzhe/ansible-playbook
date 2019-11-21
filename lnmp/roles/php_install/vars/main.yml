@@ -1,0 +1,8 @@
+#php安装中用到的变量
+PHP_VER: 7.2.6
+PHP_USER: php-fpm
+NGINX_USER: www
+PHP_PORT: 9000
+SOURCE_DIR: /tmp/lnmp
+PHP_DIR: /usr/local/php
+MYSQL_DIR: /usr/local/mysql
