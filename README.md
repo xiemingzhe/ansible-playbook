@@ -1,2 +1,2 @@
 # ansible-playbook
-ansible-playbook install lnmp,zabbix...
+Ansible-playbook install lnmp.
